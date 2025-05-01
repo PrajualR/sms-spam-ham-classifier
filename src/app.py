@@ -3,9 +3,9 @@ import pandas as pd
 import time
 import os
 import pickle
-from gensim.models import Word2Vec
+# from gensim.models import Word2Vec
 import nltk
-from nltk.tokenize import word_tokenize
+# from nltk.tokenize import word_tokenize
 import plotly.express as px
 import plotly.graph_objects as go
 
