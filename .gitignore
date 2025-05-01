@@ -36,6 +36,3 @@ ENV/
 
 *.pyc
 __pycache__/
-*.pkl
-*.model
-*.png
