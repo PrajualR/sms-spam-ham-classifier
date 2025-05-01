@@ -7,7 +7,7 @@ from nltk.stem import WordNetLemmatizer
 
 def download_nltk_resources():
     """Download all required NLTK resources"""
-    resources = ['punkt', 'stopwords', 'wordnet']
+    resources = ['punkt','punkt_tab', 'stopwords', 'wordnet']
     for resource in resources:
         try:
             nltk.data.find(f'tokenizers/{resource}')
