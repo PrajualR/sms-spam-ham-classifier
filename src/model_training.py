@@ -7,7 +7,8 @@ import seaborn as sns
 
 # Import our custom modules
 from data_preprocessing import load_data, prepare_dataset
-from feature_engineering import word2vec_model, create_avgword2vec, split_dataset
+# from feature_engineering import word2vec_model, create_avgword2vec, split_dataset
+from feature_engineering import create_tfidf_features, split_dataset
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -24,10 +25,15 @@ def train_model():
     # Save preprocessed data
     df.to_csv(os.path.join(f"{BASE_DIR}/data/processed", 'preprocessed_data.csv'), index=False)
 
-    # Feature engineering
-    print("Creating Word2Vec features...")
-    w2v_model = word2vec_model(df)
-    X = create_avgword2vec(df, w2v_model)
+    # # Feature engineering
+    # print("Creating Word2Vec features...")
+    # w2v_model = word2vec_model(df)
+    # X = create_avgword2vec(df, w2v_model)
+    # y = df['Label'].values
+
+    # Feature extraction using TF-IDF
+    print("Extracting TF-IDF features...")
+    X, tfidf_vectorizer = create_tfidf_features(df, max_features=1000)
     y = df['Label'].values
 
     # Split dataset
@@ -36,7 +42,7 @@ def train_model():
 
     # Train model
     print("Training model...")
-    model = RandomForestClassifier(n_estimators=100, random_state=42)
+    model = RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced')
     model.fit(X_train, y_train)
 
     # Evaluate model
@@ -59,12 +65,19 @@ def train_model():
     plt.title('Confusion Matrix')
     plt.savefig(f'{BASE_DIR}/models/confusion_matrix.png')
 
-    # Save model and Word2Vec model
-    print("Saving models...")
-    with open(f'{BASE_DIR}/models/spam_classifier.pkl', 'wb') as f:
-        pickle.dump(model, f)
+    # # Save model and Word2Vec model
+    # print("Saving models...")
+    # with open(f'{BASE_DIR}/models/spam_classifier.pkl', 'wb') as f:
+    #     pickle.dump(model, f)
+    #
+    # w2v_model.save(f'{BASE_DIR}/models/word2vec.model')
 
-    w2v_model.save(f'{BASE_DIR}/models/word2vec.model')
+    # Save model and vectorizer
+    print("Saving model and TF-IDF vectorizer...")
+    with open(os.path.join(BASE_DIR, 'models', 'spam_classifier.pkl'), 'wb') as f:
+        pickle.dump(model, f)
+    with open(os.path.join(BASE_DIR, 'models', 'tfidf_vectorizer.pkl'), 'wb') as f:
+        pickle.dump(tfidf_vectorizer, f)
 
     # Save label counts for visualization
     label_counts = df['Label'].value_counts().reset_index()
@@ -73,8 +86,8 @@ def train_model():
     label_counts.to_csv(f'{BASE_DIR}/models/label_counts.csv', index=False)
 
     print(f"Training complete. Models saved in {BASE_DIR}/models/")
-    return model, w2v_model
-
+    # return model, w2v_model
+    return model, tfidf_vectorizer
 
 if __name__ == "__main__":
     train_model()

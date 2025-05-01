@@ -1,11 +1,11 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
-import numpy as np
+
 import nltk
 import os
-from gensim.models import Word2Vec
-from nltk.tokenize import word_tokenize
+# from gensim.models import Word2Vec
+# from nltk.tokenize import word_tokenize
 import uvicorn
 
 # Download NLTK resources
@@ -19,7 +19,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from data_preprocessing import preprocess_text
-from feature_engineering import get_avg_word2vec
+# from feature_engineering import get_avg_word2vec
 
 # Create FastAPI app
 app = FastAPI(
@@ -51,13 +51,14 @@ class PredictionResponse(BaseModel):
 
 # Global variables for models
 model = None
-w2v_model = None
-
+# w2v_model = None
+tfidf_vectorizer = None
 
 @app.on_event("startup")
 def load_models():
     """Load models on startup"""
-    global model, w2v_model
+    # global model, w2v_model
+    global model, tfidf_vectorizer
 
     try:
         # Go up one level from /src to project root
@@ -66,13 +67,16 @@ def load_models():
 
         # Correct model paths
         model_path = os.path.join(project_root, "models", "spam_classifier.pkl")
-        w2v_path = os.path.join(project_root, "models", "word2vec.model")
+        # w2v_path = os.path.join(project_root, "models", "word2vec.model")
+        tfidf_path = os.path.join(project_root, "models", "tfidf_vectorizer.pkl")
 
         # Load models
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
 
-        w2v_model = Word2Vec.load(w2v_path)
+        # w2v_model = Word2Vec.load(tfidf_path)
+        with open(tfidf_path, 'rb') as f:
+            tfidf_vectorizer = pickle.load(f)
 
         print("Models loaded successfully!")
     except Exception as e:
@@ -93,9 +97,11 @@ def read_root():
 @app.post("/predict", response_model=PredictionResponse)
 def predict_spam(message_data: Message):
     """Predict if a message is spam or ham"""
-    global model, w2v_model
+    # global model, w2v_model
+    global model, tfidf_vectorizer
 
-    if model is None or w2v_model is None:
+    # if model is None or w2v_model is None:
+    if model is None or tfidf_vectorizer is None:
         raise HTTPException(
             status_code=500,
             detail="Models not loaded. Run model_training.py first."
@@ -106,13 +112,14 @@ def predict_spam(message_data: Message):
         cleaned_text = preprocess_text(message_data.message)
 
         # Tokenize the cleaned text
-        tokens = word_tokenize(cleaned_text)
+        # tokens = word_tokenize(cleaned_text)
 
         # Convert to word embeddings
-        vector = get_avg_word2vec(tokens, w2v_model, w2v_model.vector_size)
+        # vector = get_avg_word2vec(tokens, w2v_model, w2v_model.vector_size)
+        vector = tfidf_vectorizer.transform([cleaned_text])
 
         # Reshape for model input (single sample)
-        vector = vector.reshape(1, -1)
+        # vector = vector.reshape(1, -1)
 
         # Make prediction
         prediction = model.predict(vector)[0]
@@ -134,9 +141,11 @@ def predict_spam(message_data: Message):
 @app.get("/health")
 def health_check():
     """Health check endpoint"""
-    global model, w2v_model
+    # global model, w2v_model
+    global model, tfidf_vectorizer
 
-    if model is None or w2v_model is None:
+    # if model is None or w2v_model is None:
+    if model is None or tfidf_vectorizer is None:
         return {"status": "error", "message": "Models not loaded"}
 
     return {"status": "ok", "message": "Service is healthy"}

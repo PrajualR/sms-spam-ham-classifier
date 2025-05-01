@@ -36,14 +36,18 @@ def load_models():
         base_path = os.path.dirname(os.path.abspath(__file__))
         project_root = os.path.abspath(os.path.join(base_path, ".."))
         model_path = os.path.join(project_root, "models", "spam_classifier.pkl")
-        w2v_path = os.path.join(project_root, "models", "word2vec.model")
+        # w2v_path = os.path.join(project_root, "models", "word2vec.model")
+        tfidf_path = os.path.join(project_root, "models", "tfidf_vectorizer.pkl")
+
         # Load the models
         with open(model_path, 'rb') as f:
             model = pickle.load(f)
 
-        w2v_model = Word2Vec.load(w2v_path)
-
-        return model, w2v_model
+        # w2v_model = Word2Vec.load(w2v_path)
+        with open(tfidf_path, 'rb') as f:
+            tfidf_vectorizer = pickle.load(f)
+        # return model, w2v_model
+        return model, tfidf_vectorizer
 
     except Exception as e:
         st.error(f"Error loading models: {str(e)}")
@@ -51,18 +55,21 @@ def load_models():
         return None, None
 
 # Function to make predictions
-def predict_spam(text, model, w2v_model):
-    if model is None or w2v_model is None:
+def predict_spam(text, model, tfidf_vectorizer):
+    # if model is None or w2v_model is None:
+    if model is None or tfidf_vectorizer is None:
         st.error("Models not loaded. Run model_training.py first!")
         return None
     # Preprocess the text
     cleaned_text = preprocess_text(text)
-    # Tokenize the cleaned text
-    tokens = word_tokenize(cleaned_text)
+    # # Tokenize the cleaned text
+    # tokens = word_tokenize(cleaned_text)
     # Convert to word embeddings
-    vector = get_avg_word2vec(tokens, w2v_model, w2v_model.vector_size)
-    # Reshape for model input (single sample)
-    vector = vector.reshape(1, -1)
+    # vector = get_avg_word2vec(tokens, w2v_model, w2v_model.vector_size)
+    vector = tfidf_vectorizer.transform([cleaned_text])
+
+    # # Reshape for model input (single sample)
+    # vector = vector.reshape(1, -1)
     # Make prediction
     prediction = model.predict(vector)[0]
     probabilities = model.predict_proba(vector)[0]
@@ -78,7 +85,8 @@ def predict_spam(text, model, w2v_model):
 
 
 def main():
-    model, w2v_model = load_models()
+    # model, w2v_model = load_models()
+    model, tfidf_vectorizer = load_models()
     # #Sidebar with app info
     # with st.sidebar:
     #     st.title("📱 SMS Spam Classifier")
@@ -111,7 +119,8 @@ def main():
                 with st.spinner("Analyzing..."):
                     # Add slight delay for better user experience
                     time.sleep(0.5)
-                    result = predict_spam(message, model, w2v_model)
+                    # result = predict_spam(message, model, w2v_model)
+                    result = predict_spam(message, model, tfidf_vectorizer)
 
                 if result:
                     # Display result
@@ -195,7 +204,8 @@ def main():
 
                         for i, message in enumerate(df[message_col]):
                             if isinstance(message, str):
-                                result = predict_spam(message, model, w2v_model)
+                                # result = predict_spam(message, model, w2v_model)
+                                result = predict_spam(message, model, tfidf_vectorizer)
                                 if result:
                                     results.append({
                                         'message': message,

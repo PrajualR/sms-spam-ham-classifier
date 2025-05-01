@@ -2,6 +2,7 @@ import numpy as np
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
 from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 def word2vec_model(df, vector_size=100, window =5, min_count=1):
     """Train a Word2Vec model on SMS dataset"""
@@ -33,6 +34,12 @@ def create_avgword2vec(df,model, vector_size=100):
         features.append(avg_vector)
 
     return np.array(features)
+
+def create_tfidf_features(df, max_features=1000):
+    """Generate TF-IDF features for clean messages"""
+    vectorizer = TfidfVectorizer(max_features=max_features, ngram_range=(1, 2))
+    X_tfidf = vectorizer.fit_transform(df['clean_message'])
+    return X_tfidf, vectorizer
 
 def split_dataset(X, y, test_size=0.2, random_state=42):
     return train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=y)
