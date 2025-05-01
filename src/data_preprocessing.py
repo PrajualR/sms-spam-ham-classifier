@@ -5,9 +5,19 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+def download_nltk_resources():
+    """Download all required NLTK resources"""
+    resources = ['punkt', 'stopwords', 'wordnet']
+    for resource in resources:
+        try:
+            nltk.data.find(f'tokenizers/{resource}')
+            print(f"Resource '{resource}' already downloaded")
+        except LookupError:
+            print(f"Downloading '{resource}'...")
+            nltk.download(resource, quiet=True)
+
+# Call this function at import time
+download_nltk_resources()
 
 def load_data(file_path):
     base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

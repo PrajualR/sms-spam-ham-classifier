@@ -9,16 +9,12 @@ import nltk
 import plotly.express as px
 import plotly.graph_objects as go
 
-# Download NLTK resources
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
-nltk.download('wordnet', quiet=True)
+from data_preprocessing import preprocess_text, download_nltk_resources
+# from feature_engineering import get_avg_word2vec
+download_nltk_resources()
 
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from data_preprocessing import preprocess_text
-# from feature_engineering import get_avg_word2vec
 
 # Set page configuration
 st.set_page_config(

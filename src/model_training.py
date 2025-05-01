@@ -6,13 +6,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Import our custom modules
-from data_preprocessing import load_data, prepare_dataset
+from data_preprocessing import load_data, prepare_dataset, download_nltk_resources
 # from feature_engineering import word2vec_model, create_avgword2vec, split_dataset
 from feature_engineering import create_tfidf_features, split_dataset
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def train_model():
+    download_nltk_resources()
     # Create directories if they don't exist
     os.makedirs(os.path.join(BASE_DIR, 'models'), exist_ok=True)
     os.makedirs(os.path.join(BASE_DIR, 'data', 'processed'), exist_ok=True)

@@ -36,7 +36,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def create_tfidf_features(df, max_features=1000):
     """Generate TF-IDF features for clean messages"""
-    vectorizer = TfidfVectorizer(max_features=max_features, ngram_range=(1, 2))
+    vectorizer = TfidfVectorizer(max_features=max_features, ngram_range=(1, 2), min_df=2)
     X_tfidf = vectorizer.fit_transform(df['clean_message'])
     return X_tfidf, vectorizer
 

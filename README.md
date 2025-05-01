@@ -1,6 +1,6 @@
 # Spam SMS Classification using NLP, Word2Vec and AvgWord2Vec
 
-This project implements an SMS spam classification system using Natural Language Processing (NLP) techniques. It leverages Word2Vec word embeddings and AvgWord2Vec approach to convert text data into meaningful numerical features for machine learning models.
+This project implements an SMS spam classification system using Natural Language Processing (NLP) techniques. It leverages TfidfVectorizer, Word2Vec word embeddings and AvgWord2Vec approach to convert text data into meaningful numerical features for machine learning models.
 
 ## 📁 Project Structure
 
