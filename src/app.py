@@ -18,7 +18,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from data_preprocessing import preprocess_text
-from feature_engineering import get_avg_word2vec
+# from feature_engineering import get_avg_word2vec
 
 # Set page configuration
 st.set_page_config(

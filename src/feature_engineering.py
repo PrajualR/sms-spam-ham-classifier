@@ -1,5 +1,4 @@
-import numpy as np
-from nltk.tokenize import word_tokenize
+# from nltk.tokenize import word_tokenize
 # from gensim.models import Word2Vec
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
