@@ -21,7 +21,7 @@ def train_model():
 
     # Load and preprocess data
     print("Loading and preprocessing data...")
-    df = load_data(os.path.join(BASE_DIR, 'data', 'raw', 'SMSSpamCollection.csv'))
+    df = load_data()
     df = prepare_dataset(df)
 
     # Save preprocessed data
