@@ -1,6 +1,7 @@
 import pickle
 import os
 from sklearn.ensemble import RandomForestClassifier
+from imblearn.over_sampling import SMOTE
 from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -40,6 +41,9 @@ def train_model():
     # Split dataset
     print("Splitting dataset...")
     X_train, X_test, y_train, y_test = split_dataset(X, y)
+
+    smote = SMOTE(random_state=42)
+    X_train, y_train = smote.fit_resample(X_train, y_train)
 
     # Train model
     print("Training model...")

@@ -18,7 +18,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Set page configuration
 st.set_page_config(
-    page_title="SMS Spam Classifier",
+    page_title="SMS Spam-Ham Detection",
     page_icon="📱",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -93,13 +93,13 @@ def main():
     #     )
 
     # Main content
-    st.title("SMS Spam/Ham Classifier")
+    st.title("SMS Spam/Ham Detector")
     # Create tabs
     tab1, tab2 = st.tabs(["Single Message", "Batch Analysis"])
 
     # Tab 1: Single message analysis
     with tab1:
-        st.markdown("### Check if your message is spam")
+        st.markdown("### Check if your message is spam or ham")
 
         # Single message text input
         message = st.text_area(

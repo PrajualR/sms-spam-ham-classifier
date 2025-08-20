@@ -38,11 +38,11 @@ Classifier: Random Forest
 Note: Word2Vec + AvgWord2Vec code is present but currently not used in the final pipeline.
 
 ## ⚙️ FastAPI
-The api_service.py provides a REST API interface but is not used in the Streamlit deployment or locally. No setup instructions are included for FastAPI.
+The api_service.py provides a REST API interface but is not used in the Streamlit deployment or locally.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 ---
 
